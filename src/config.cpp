@@ -24,6 +24,8 @@ float Config::Glow::AllyG     = 0.8f;
 float Config::Glow::AllyB     = 0.8f;
 float Config::Glow::AllyA     = 0.8f;
 
+std::string Config::Glow::ToggleKey     = "H";
+
 int   Config::Visual::Contrast = 0;
 bool  Config::Visual::DisablePostProcessing = true;
 bool  Config::Visual::NoFlash = true;
@@ -41,6 +43,8 @@ bool  Config::AimBot::UseTriggerKey = true;
 std::string Config::AimBot::TriggerKey = "F";
 bool  Config::AimBot::UseMouseEvents = false;
 bool  Config::AimBot::AttackTeammate = false;
+
+std::string Config::AimBot::ToggleKey = "J";
 
 bool Config::Other::BunnyHop = false;
 
@@ -91,6 +95,8 @@ void UpdateConfig()
         WritePair(AimBot, UseMouseEvents);
         WriteComment("Also attack teammate");
         WritePair(AimBot, AttackTeammate);
+        WriteComment("ToggleKey Aim");
+        WritePair(AimBot, ToggleKey);
         WriteSectionEnd();
 
         WriteSection(Glow);
@@ -109,6 +115,8 @@ void UpdateConfig()
         WritePair(Glow, AllyG);
         WritePair(Glow, AllyB);
         WritePair(Glow, AllyA);
+        WriteComment("ToggleKey Glow");
+        WritePair(Glow, ToggleKey);
         WriteSectionEnd();
 
         WriteSection(Visual);
@@ -156,6 +164,7 @@ bool ReadConfig(const std::string &configFile)
     RCBOOL(AimBot, UseTriggerKey);
     RCBOOL(AimBot, UseMouseEvents);
     RCBOOL(AimBot, AttackTeammate);
+    RCSTR(AimBot, ToggleKey);
 
     RCBOOL(Glow, Enabled);
     RCBOOL(Glow, Radar);
@@ -172,6 +181,7 @@ bool ReadConfig(const std::string &configFile)
     RCDBL (Glow, AllyG);
     RCDBL (Glow, AllyB);
     RCDBL (Glow, AllyA);
+    RCSTR (Glow, ToggleKey);
 
     RCINT(Visual, Contrast);
     RCBOOL(Visual, DisablePostProcessing);

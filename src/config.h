@@ -19,6 +19,8 @@ namespace Config {
         extern std::string TriggerKey;
         extern bool        UseMouseEvents;
         extern bool        AttackTeammate;
+
+        extern std::string ToggleKey;
     };
 
     namespace Glow {
@@ -38,6 +40,8 @@ namespace Config {
         extern float AllyG;
         extern float AllyB;
         extern float AllyA;
+
+        extern std::string ToggleKey;
     };
 
     namespace Visual {
