@@ -9,9 +9,9 @@
 void FOther::BHop(uintptr_t localPlayer)
 {
     constexpr int FL_ONGROUND = (1<<0);
-    constexpr size_t m_fFlags = 0x138;
+
     int flags;
-    if (m_mem.Read(localPlayer + m_fFlags, &flags)) {
+    if (m_mem.Read(localPlayer + Netvar::CBaseEntity::m_fFlags, &flags)) {
         if (Helper::IsKeyDown(Helper::KeysymToKeycode(XK_space))) {
             if (flags & FL_ONGROUND) {
                 m_mem.Write(Offset::Client::ForceJump, 5, sizeof(uint8_t));
