@@ -5,7 +5,7 @@
 
 FBase::FBase()
 {
-    m_stop = false;
+    m_stop = true;
 }
 
 FBase::~FBase()
@@ -26,6 +26,11 @@ void FBase::Stop()
     if (m_thread.joinable()) {
         m_thread.join();
     }
+}
+
+bool FBase::Running()
+{
+    return !m_stop;
 }
 
 void FBase::Log(const std::string &msg)

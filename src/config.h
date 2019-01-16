@@ -52,6 +52,7 @@ namespace Config {
 
     namespace Other {
         extern bool BunnyHop;
+        extern std::string ToggleKey;
     }
 };
 

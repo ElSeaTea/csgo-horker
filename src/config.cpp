@@ -48,6 +48,8 @@ std::string Config::AimBot::ToggleKey = "J";
 
 bool Config::Other::BunnyHop = false;
 
+std::string Config::Other::ToggleKey = "L";
+
 #define WriteSection(key) \
     conf << "[" #key "]" << "\n";
 #define WritePair(section, key) \
@@ -130,6 +132,8 @@ void UpdateConfig()
         WriteSection(Other);
         WriteComment("Enable bunnyhop 1/0");
         WritePair(Other, BunnyHop);
+        WriteComment("Togglekey for other (bhop)");
+        WritePair(Other, ToggleKey);
         conf.close();
     }
 }
@@ -188,6 +192,7 @@ bool ReadConfig(const std::string &configFile)
     RCBOOL(Visual, NoFlash);
 
     RCBOOL(Other, BunnyHop);
+    RCSTR(Other, ToggleKey);
     UpdateConfig();
     return true;
 }

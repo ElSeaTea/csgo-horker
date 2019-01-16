@@ -12,6 +12,7 @@ class FBase {
         void operator=(FBase const &) = delete;
         void Start();
         void Stop();
+        bool Running();
 
     protected:
         virtual void Run() = 0;

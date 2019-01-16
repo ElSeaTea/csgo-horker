@@ -101,29 +101,25 @@ int main()
     FOther fother(proc);
     FVisual fvisual(proc);
 
-    bool useMouseButtonAim = false;
-    if (Config::AimBot::ToggleKey.compare(0, 5, "Mouse") == 0) {
-        useMouseButtonAim = true;
-    }
-
-    bool useMouseButtonGlow = false;
-    if (Config::Glow::ToggleKey.compare(0, 5, "Mouse") == 0) {
-        useMouseButtonGlow = true;
-    }
+    bool useMouseButtonAim = (Config::AimBot::ToggleKey.compare(0, 5, "Mouse") == 0);
+    bool useMouseButtonGlow = (Config::Glow::ToggleKey.compare(0, 5, "Mouse") == 0);
+    bool useMouseButtonOther = (Config::Other::ToggleKey.compare(0, 5, "Mouse") == 0);
 
     const int aimToggleKey = useMouseButtonAim ? 
         Helper::StringToMouseMask(Config::AimBot::ToggleKey) :
         Helper::StringToKeycode(Config::AimBot::ToggleKey);
 
     const int glowToggleKey = useMouseButtonGlow ? 
-        Helper::StringToMouseMask(Config::Glow::ToggleKey) :
-        Helper::StringToKeycode(Config::Glow::ToggleKey);
+            Helper::StringToMouseMask(Config::Glow::ToggleKey) :
+            Helper::StringToKeycode(Config::Glow::ToggleKey);
 
-    bool aimRunning = false;
-    bool glowRunning = false;
+    const int otherToggleKey = useMouseButtonOther ?
+            Helper::StringToMouseMask(Config::Other::ToggleKey) :
+            Helper::StringToKeycode(Config::Other::ToggleKey);
 
     bool runAim = true;
     bool runGlow = true;
+    bool runOther = true;
 
     if (Config::Visual::Contrast != 0) {
         HWCtrl::SetContrast(Config::Visual::Contrast);
@@ -142,10 +138,9 @@ int main()
         
         // ### BEGIN IN-GAME HACKS ###
         if (eng.IsConnected()) {
+
             faim.Start();
-            aimRunning = true;
             fglow.Start();
-            glowRunning = true;
             fother.Start();
             fvisual.Start();
 
@@ -153,47 +148,59 @@ int main()
                 eng.Update();
 
                 bool shouldToggleAim = useMouseButtonAim ? Helper::IsMouseDown(aimToggleKey) :
-                Helper::IsKeyDown(aimToggleKey);
+                        Helper::IsKeyDown(aimToggleKey);
 
                 bool shouldToggleGlow = useMouseButtonGlow ? Helper::IsMouseDown(glowToggleKey) :
-                Helper::IsKeyDown(glowToggleKey);
+                        Helper::IsKeyDown(glowToggleKey);
+
+                bool shouldToggleOther = useMouseButtonOther ? Helper::IsMouseDown(otherToggleKey) :
+                        Helper::IsKeyDown(otherToggleKey);
 
                 runAim = shouldToggleAim ? !runAim : runAim;
                 while (shouldToggleAim) {
                     shouldToggleAim = useMouseButtonAim ? Helper::IsMouseDown(aimToggleKey) :
-                    Helper::IsKeyDown(aimToggleKey);
+                            Helper::IsKeyDown(aimToggleKey);
                     std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 }
+
                 runGlow = shouldToggleGlow ? !runGlow : runGlow;
                 while (shouldToggleGlow) {
                     shouldToggleGlow = useMouseButtonGlow ? Helper::IsMouseDown(glowToggleKey) :
-                    Helper::IsKeyDown(glowToggleKey);
+                            Helper::IsKeyDown(glowToggleKey);
                     std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 }
 
-                if (aimRunning && !runAim) {
-                    faim.Stop();
-                    aimRunning = false;
-                } else if (!aimRunning && runAim) {
-                    faim.Start();
-                    aimRunning = true;
+                runOther = shouldToggleOther ? !runOther : runOther;
+                while (shouldToggleOther) {
+                    shouldToggleOther = useMouseButtonOther ? Helper::IsMouseDown(otherToggleKey) :
+                            Helper::IsKeyDown(otherToggleKey);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 }
 
-                if (glowRunning && !runGlow) {
-                    fglow.Stop();
-                    glowRunning = false;
-                } else if (!glowRunning && runGlow) {
+
+                if (faim.Running() && !runAim) {
+                    faim.Stop();
+                } else if (!faim.Running() && runAim) {
+                    faim.Start();
+                }
+
+                if (fglow.Running() && !runGlow) {
+                    fglow.Stop();;
+                } else if (!fglow.Running() && runGlow) {
                     fglow.Start();
-                    glowRunning = true;
+                }
+
+                if (fother.Running() && !runOther) {
+                    fother.Stop();
+                } else if (!fother.Running() && runOther) {
+                    fother.Start();
                 }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
 
             faim.Stop();
-            aimRunning = false;
             fglow.Stop();
-            glowRunning = false;
             fother.Stop();
             fvisual.Stop();
         }
